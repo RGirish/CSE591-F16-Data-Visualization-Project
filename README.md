@@ -1,1 +1,1 @@
-# CSE591-Data-Visualization
+# CSE591 F16 Data Visualization Course Project
