@@ -10,28 +10,45 @@
 <body>
     <script src="http://d3js.org/d3.v3.min.js"></script>
     <script type="text/javascript">
+    function getQueryParams(qs) {
+        qs = qs.split('+').join(' ');
+
+        var params = {},
+            tokens,
+            re = /[?&]?([^=]+)=([^&]*)/g;
+
+        while (tokens = re.exec(qs)) {
+            params[decodeURIComponent(tokens[1])] = decodeURIComponent(tokens[2]);
+        }
+        return params;
+    }
+    var query = getQueryParams(document.location.search);
+
     function row(d) {
         return {
+            user_id: d.user_id,
             tag: d.tag
         };
     }
     var tagsAndCount = {},
         count = 0,
         keys = [];
-    d3.csv("javadataset/21.csv", row, function(data) {
+    d3.csv("javadataset/22.csv", row, function(data) {
         data.map(function(d) {
+            var user_id = d.user_id; 
             var tag = d.tag.substring(5, d.tag.length);
-            if (tagsAndCount[tag] == undefined) {
-                tagsAndCount[tag] = 1;
-            } else {
-                tagsAndCount[tag] += 1;
+            if (tag.includes(query.contains)) {
+                if (tagsAndCount[user_id] == undefined) {
+                    tagsAndCount[user_id] = 1;
+                } else {
+                    tagsAndCount[user_id] += 1;
+                }
             }
         });
-
         keys = Object.keys(tagsAndCount);
         keys.sort();
         for (var i = 0; i < keys.length; ++i) {
-            console.log(keys[i] + " - " + tagsAndCount[keys[i]]);
+            console.log(keys[i] + "," + tagsAndCount[keys[i]]);
         }
     });
     </script>
